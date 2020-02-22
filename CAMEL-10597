@@ -1,0 +1,28 @@
+from bs4 import BeautifulSoup
+import requests
+import os
+import os.path
+import csv
+
+listingurl = "https://issues.apache.org/jira/browse/CAMEL-10597"
+
+response = requests.get(listingurl)
+soup = BeautifulSoup(response.text, "html.parser")
+
+listings = []
+for rows in soup.find(class_='BodyText'):
+
+    Type = soup.find("img", {
+                     "src": "/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"})
+    Assignee = soup.find("img", {
+                         "src": "https://issues.apache.org/jira/secure/useravatar?size=small&amp;avatarId=10452"})
+    Created = soup.find("time", {"class": "livestamp" "datetime"})
+    Description = soup.find("div",  {"class": "user-content-block"})
+    Comments = soup.find("img", {
+                         "src": "https://issues.apache.org/jira/secure/useravatar?size=small&amp;avatarId=10452"})
+
+    listings.append([Type, Assignee, Created, Description, Comments])
+
+with open("CAMEL-10597.csv", 'a') as toWrite:
+    writer = csv.writer(toWrite)
+    writer.writerows(listings)
