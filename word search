@@ -1,1 +1,90 @@
 
+class MA:
+
+    def __init__(self):
+        self.R = None
+        self.C = None
+        self.dir = [[-1, 0], [1, 0],
+                    [0, 1], [0, -1]]
+
+    # This function searches in all 4-direction
+ 
+    def search2D(self, grid, row, col, word):
+        
+        if grid[row][col] != word[0]:
+            return False
+
+        
+        for x, y in self.dir:
+
+            
+            rd, cd = row + x, col + y
+            flag = True
+
+            # First character is already checked,
+            # match remaining characters
+            for k in range(1, len(word)):
+
+                # If out of bound or not matched, break
+                if (0 <= rd < self.R and
+                        0 <= cd < self.C and
+                        word[k] == grid[rd][cd]):
+
+                    # Moving in particular direction
+                    rd += x
+                    cd += y
+                else:
+                    flag = False
+                    break
+
+            
+            if flag:
+                return True
+        return False
+
+   
+    def patternSearch(self, grid, word):
+
+        # Rows and columns in given grid
+        self.R = len(grid)
+        self.C = len(grid[0])
+
+        
+        for row in range(self.R):
+            for col in range(self.C):
+                if self.search2D(grid, row, col, word):
+                    return (row, col)
+
+        return ()
+
+
+if __name__ == '__main__':
+    try:
+        # grid = "grid"
+
+        grid = []
+
+        word = input("please type the word ")
+
+        R = int(input("Enter the number of rows:"))
+        C = int(input("Enter the number of columns:"))
+
+        print("Enter the entries rowwise:")
+
+        # For user input
+        for i in range(R):          # A for loop for row entries
+            a = []
+            for j in range(C):      # A for loop for column entries
+                a.append(str(input()))
+            grid.extend(a)
+
+        ma = MA()
+        index = ma.patternSearch(grid, word)
+
+        if len(index) != 0:
+            print('True!', 'Found at ', index)
+        else:
+            print('Not found.')
+
+    except Exception as e:
+        print(e)
